@@ -1,0 +1,56 @@
+@model List<TaskTrackerWeb.Models.Task>
+@{
+    ViewData["Title"] = "Task Tracker";
+}
+
+
+
+<h1>Task Tracker</h1>
+
+<form asp-controller="Task" asp-action="Add" method="post" class="mb-4">
+    <input type="text" name="title" placeholder="Enter task title" class="form-control mb-2" required />
+    <input type="date" name="dueDate" class="form-control mb-2" />
+    <select name="priority" class="form-select mb-2">
+        <option value="">Select Priority</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Add Task</button>
+</form>
+
+<h1>Task List</h1>
+
+<form method="get" asp-controller="Task" asp-action="Index" class="mb-3">
+    <div class="input-group">
+        <select name="priorityFilter" class="form-select" onchange="this.form.submit()">
+            <option value="">All Priorities</option>
+            <option value="Low" selected="@(ViewBag.SelectedPriority == "Low")">Low</option>
+            <option value="Medium" selected="@(ViewBag.SelectedPriority == "Medium")">Medium</option>
+            <option value="High" selected="@(ViewBag.SelectedPriority == "High")">High</option>
+        </select>
+    </div>
+</form>
+
+<ul class="list-group">
+@foreach (var task in Model)
+{
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <strong>@task.Id.</strong> @task.Title
+            <small class="text-muted">(@task.Priority) - @(task.DueDate?.ToString("yyyy-MM-dd") ?? "No due date")</small>
+        </div>
+        <div>
+            @if (!task.IsCompleted)
+            {
+                <a href="/Task/Complete/@task.Id" class="btn btn-sm btn-success">Mark Complete</a>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Completed</span>
+            }
+        </div>
+    </li>
+}
+</ul>
+
